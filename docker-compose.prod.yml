@@ -1,0 +1,47 @@
+name: my-docker-project
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: my-docker-container
+    command: gunicorn a_core.asgi:application --bind 0.0.0.0:8000 -w 4 -k uvicorn.workers.UvicornWorker
+    volumes:
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:17
+    container_name: postgres-container
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    # ports:
+    #   - "5432:5432"
+    environment:
+      - POSTGRES_USER=hello_django
+      - POSTGRES_PASSWORD=hello_django
+      - POSTGRES_DB=hello_django_dev
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    volumes:
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
+    depends_on:
+      - app
+
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
