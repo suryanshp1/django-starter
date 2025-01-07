@@ -7,6 +7,9 @@ WORKDIR /app
 
 COPY requirements_dev.txt .
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends netcat
+
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements_dev.txt
 
 # copy entrypoint.sh

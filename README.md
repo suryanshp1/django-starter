@@ -104,6 +104,7 @@ docker run -d -p 8001:8000 -v .:/app  my-docker-image  # run it on port 8001 and
 docker compose up -d --build # run containers through docker compose file
 docker compose down --volumes # down the containers and removing volume
 docker compose exec app python manage.py migrate --noinput # migration command
+docker compose exec app python manage.py createsuperuser # create super user
 
 ## Common commands
 docker system prune -a # delete all docker related data
