@@ -22,12 +22,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('djpanel/', admin.site.urls),
     path('', home_view, name='home'),
     path('profile/', include('a_users.urls')),
     path('accounts/', include('allauth.urls')),
-    path('messageboard/', include('a_messageboard.urls')),
     path('@<username>/', profile_view, name='profile'),
+    path('messageboard/', include('a_messageboard.urls')),
 ]
 
 # Only used for development

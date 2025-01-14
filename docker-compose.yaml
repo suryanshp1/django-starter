@@ -13,6 +13,7 @@ services:
       - .:/app
     depends_on:
       - postgres
+      - pgbouncer
 
   postgres:
     image: postgres:17
@@ -20,12 +21,26 @@ services:
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    # ports:
-    #   - "5432:5432"
+    healthcheck:  
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
-      - POSTGRES_USER=hello_django
-      - POSTGRES_PASSWORD=hello_django
-      - POSTGRES_DB=hello_django_dev
+      - DATABASE = postgres
+    env_file:
+      - ./.env
+
+  pgbouncer:
+    image: edoburu/pgbouncer:1.18.0
+    container_name: pgbouncer-container
+    restart: always
+    ports:
+      - "6432:6432"
+    depends_on:
+      - postgres
+    env_file:
+      - ./.env
 
 
 volumes:

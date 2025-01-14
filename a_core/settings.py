@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from a_core.enums import APIConfigEnums
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,12 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = APIConfigEnums.secret_key.value
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv("DEBUG", default=0))
+if APIConfigEnums.environment.value == "developemnt":
+    DEBUG = True
+else:
+    DEBUG = False
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = APIConfigEnums.allowed_hosts.value
 
 
 # Application definition
@@ -45,6 +49,7 @@ INSTALLED_APPS = [
     'a_home',
     'a_users',
     'a_messageboard',
+    "admin_honeypot",
 ]
 
 MIDDLEWARE = [
@@ -57,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'a_core.urls'
@@ -85,12 +91,12 @@ WSGI_APPLICATION = 'a_core.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.getenv("SQL_USER", "user"),
-        "PASSWORD": os.getenv("SQL_PASSWORD", "password"),
-        "HOST": os.getenv("SQL_HOST", "localhost"),
-        "PORT": os.getenv("SQL_PORT", "5432"),
+        "ENGINE": APIConfigEnums.engine.value,
+        "NAME": APIConfigEnums.name.value,
+        "USER": APIConfigEnums.user.value,
+        "PASSWORD": APIConfigEnums.password.value,
+        "HOST": APIConfigEnums.host.value,
+        "PORT": APIConfigEnums.port.value,
     }
 }
 
@@ -135,10 +141,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-# ]
-STATIC_ROOT = BASE_DIR / "static"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / "media"
