@@ -9,3 +9,5 @@ uvicorn==0.34.0
 python-dotenv==1.0.1
 django-admin-honeypot-2024==1.0.0
 whitenoise==6.8.2
+django-cloudinary-storage==0.3.0
+django-resized==1.0.3

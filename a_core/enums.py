@@ -20,3 +20,11 @@ class APIConfigEnums(Enum):
     password = os.getenv("POSTGRES_PASSWORD", "password")
     host = os.getenv("SQL_HOST", "localhost")
     port = int(os.getenv("SQL_PORT", 5432))
+    email_host = os.getenv("EMAIL_HOST")
+    email_host_user = os.getenv("EMAIL_HOST_USER")
+    email_host_password = os.getenv("EMAIL_HOST_PASSWORD")
+
+class CloudinaryConfigEnums(Enum):
+    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME")
+    api_key = os.getenv("CLOUDINARY_API_KEY")
+    api_secret = os.getenv("CLOUDINARY_API_SECRET")

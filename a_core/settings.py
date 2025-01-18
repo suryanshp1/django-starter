@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-from a_core.enums import APIConfigEnums
-import os
+from a_core.enums import APIConfigEnums, CloudinaryConfigEnums
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     'django_cleanup.apps.CleanupConfig',
     'allauth',
     'allauth.account',
@@ -147,7 +148,17 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / "media"
+
+if APIConfigEnums.environment.value == "production":
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    MEDIA_ROOT = BASE_DIR / "media"
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': CloudinaryConfigEnums.cloud_name.value,
+    'API_KEY': CloudinaryConfigEnums.api_key.value,
+    'API_SECRET': CloudinaryConfigEnums.api_secret.value,
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -157,7 +168,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# if APIConfigEnums.environment.value == "production":
+#     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#     EMAIL_HOST = APIConfigEnums.email_host.value
+#     EMAIL_HOST_USER = APIConfigEnums.email_host_user.value
+#     EMAIL_HOST_PASSWORD = APIConfigEnums.email_host_password.value
+#     EMAIL_PORT = 587
+#     EMAIL_USE_TLS = True
+#     DEFAULT_FROM_EMAIL = "Awesome"
+#     ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
+# else:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = APIConfigEnums.email_host.value
+EMAIL_HOST_USER = APIConfigEnums.email_host_user.value
+EMAIL_HOST_PASSWORD = APIConfigEnums.email_host_password.value
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "Awesome"
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
+
+
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
