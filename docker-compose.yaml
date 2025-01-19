@@ -14,6 +14,7 @@ services:
     depends_on:
       - postgres
       - pgbouncer
+      - redis
 
   postgres:
     image: postgres:17
@@ -42,6 +43,48 @@ services:
     env_file:
       - ./.env
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  celery_worker:
+    build: .
+    command: celery -A a_core worker -E -l INFO --pool=gevent -c 100
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - app
+
+  celery_beat:
+    build: .
+    command: celery -A a_core beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+      - app
+
+  flower:
+    build: .
+    command: celery -A a_core flower --port=5555
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - celery_worker
+      - celery_beat
 
 volumes:
   postgres_data:

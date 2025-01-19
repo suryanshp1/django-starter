@@ -23,6 +23,8 @@ class APIConfigEnums(Enum):
     email_host = os.getenv("EMAIL_HOST")
     email_host_user = os.getenv("EMAIL_HOST_USER")
     email_host_password = os.getenv("EMAIL_HOST_PASSWORD")
+    celery_broker_url = os.getenv("CELERY_BROKER_URL")
+    celery_result_backend = os.getenv("CELERY_RESULT_BACKEND")
 
 class CloudinaryConfigEnums(Enum):
     cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME")

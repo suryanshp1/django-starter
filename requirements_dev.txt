@@ -9,3 +9,8 @@ django-admin-honeypot-2024==1.0.0
 whitenoise==6.8.2
 django-cloudinary-storage==0.3.0
 django-resized==1.0.3
+celery==5.4.0
+flower==2.0.1
+redis==5.2.1
+gevent==24.11.1
+django-celery-beat==2.7.0

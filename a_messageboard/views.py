@@ -5,6 +5,7 @@ from .models import MessageBoard
 from django.shortcuts import get_object_or_404
 from .forms import MessageCreateForm
 from django.contrib import messages
+from .utils import send_email
 
 # Create your views here.
 
@@ -22,6 +23,7 @@ def messageboard_view(request):
                 message.author = request.user
                 message.messageboard = messageboard
                 message.save()
+                send_email(message)
 
         else:
             messages.warning(request, 'You are not subscribed to this messageboard!')

@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'a_users',
     'a_messageboard',
     "admin_honeypot",
+    "celery",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -186,7 +188,7 @@ EMAIL_HOST_USER = APIConfigEnums.email_host_user.value
 EMAIL_HOST_PASSWORD = APIConfigEnums.email_host_password.value
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "Awesome"
+DEFAULT_FROM_EMAIL = f"Awesome {APIConfigEnums.email_host_user.value}"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 
 
@@ -194,3 +196,11 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", "http://127.0.0.1:1337", "http://localhost:8000", "http://127.0.0.1:8000"]
+
+# Celery Settings
+BROKER_URL = APIConfigEnums.celery_broker_url.value
+CELERY_RESULT_BACKEND = APIConfigEnums.celery_result_backend.value
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
